@@ -21,6 +21,21 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
+# CSRF Trusted Origins for Railway (HTTPS)
+CSRF_TRUSTED_ORIGINS = os.environ.get(
+    'CSRF_TRUSTED_ORIGINS',
+    'https://localhost'
+).split(',')
+
+# Eğer ALLOWED_HOSTS varsa, otomatik olarak CSRF_TRUSTED_ORIGINS'e de ekle
+if 'ALLOWED_HOSTS' in os.environ:
+    hosts = os.environ.get('ALLOWED_HOSTS', '').split(',')
+    https_origins = [f'https://{host.strip()}' for host in hosts if host.strip() and not host.startswith('http')]
+    if https_origins:
+        CSRF_TRUSTED_ORIGINS.extend(https_origins)
+        # Duplicate'leri kaldır
+        CSRF_TRUSTED_ORIGINS = list(set(CSRF_TRUSTED_ORIGINS))
+
 
 # Application definition
 
