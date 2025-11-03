@@ -7,6 +7,7 @@
     <title>Sarac İhsan - At Ekipmanları</title>
     <link rel="stylesheet" href="{% static 'css/header.css' %}">
     <link rel="stylesheet" href="{% static 'css/carousel.css' %}">
+    <link rel="stylesheet" href="{% static 'css/categories-grid.css' %}">
 </head>
 <body>
     <header class="header" role="banner">
@@ -15,8 +16,8 @@
                 <img src="{% static 'images/logo.png' %}" alt="Sarac İhsan At Ekipmanları Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
                 <span style="display:none;">Sarac İhsan</span>
             </a>
-            <form class="search" role="search" action="#" method="get">
-                <input type="search" name="search" placeholder="Ürün ara...">
+            <form class="search" role="search" action="{% url 'search' %}" method="get">
+                <input type="search" name="q" placeholder="Ürün ara...">
                 <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"></circle>
                     <path d="m21 21-4.35-4.35"></path>
@@ -43,12 +44,11 @@
     <nav class="categories-nav" role="navigation">
         <div class="container">
             <ul class="categories-list">
-                <li><a href="#">Binicilik Ekipmanları</a></li>
-                <li><a href="#">At Terlikleri</a></li>
-                <li><a href="#">Dizginler ve Yedekler</a></li>
-                <li><a href="#">Çiftlik Malzemeleri</a></li>
-                <li><a href="#">At Bakım Ürünleri</a></li>
-                <li><a href="#">At Yemekleri</a></li>
+                {% for category in categories %}
+                <li><a href="{% url 'category_detail' category.slug %}">{{ category.name }}</a></li>
+                {% empty %}
+                <li><a href="#">Kategori bulunamadı</a></li>
+                {% endfor %}
             </ul>
         </div>
     </nav>
@@ -66,12 +66,11 @@
             </button>
         </div>
         <ul class="mobile-categories-list">
-            <li><a href="#">Binicilik Ekipmanları</a></li>
-            <li><a href="#">At Terlikleri</a></li>
-            <li><a href="#">Dizginler ve Yedekler</a></li>
-            <li><a href="#">Çiftlik Malzemeleri</a></li>
-            <li><a href="#">At Bakım Ürünleri</a></li>
-            <li><a href="#">At Yemekleri</a></li>
+            {% for category in categories %}
+            <li><a href="{% url 'category_detail' category.slug %}">{{ category.name }}</a></li>
+            {% empty %}
+            <li><a href="#">Kategori bulunamadı</a></li>
+            {% endfor %}
         </ul>
     </nav>
 
@@ -138,10 +137,97 @@
             <p>Carousel'de gösterilecek model bulunmuyor. Lütfen admin panelinden model ekleyin.</p>
         </div>
         {% endif %}
+
+        <!-- Kategoriler Grid Bölümü -->
+        <section class="categories-grid-section">
+            <div class="categories-grid-container">
+                <div class="categories-grid-header">
+                    <h2 class="categories-grid-title">Kategorilerimiz</h2>
+                    <p class="categories-grid-subtitle">İhtiyacınıza uygun kategoriyi seçin</p>
+                </div>
+                {% if categories %}
+                <div class="categories-grid">
+                    {% for category in categories %}
+                    <div class="category-card">
+                        <a href="{% url 'category_detail' category.slug %}" class="category-card-link" aria-label="{{ category.name }} kategorisine git">
+                            {% if category.get_image_url %}
+                            <img src="{{ category.get_image_url }}" alt="{{ category.name }}" class="category-card-image">
+                            {% else %}
+                            <div class="category-placeholder">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                </svg>
+                            </div>
+                            {% endif %}
+                            <div class="category-card-overlay">
+                                <h3 class="category-card-title">{{ category.name }}</h3>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="categories-grid-empty">
+                    <h3 class="empty-title">Kategori bulunamadı</h3>
+                    <p class="empty-message">Admin panelinden kategori ekleyerek başlayabilirsiniz.</p>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- Öne Çıkan Ürünler Bölümü -->
+        <section class="featured-products-section">
+            <div class="featured-products-container">
+                <div class="featured-products-header">
+                    <h2 class="featured-title">Öne Çıkanlar</h2>
+                    <p class="featured-subtitle">Her kategoriden seçilmiş özel ürünler</p>
+                </div>
+                {% if featured_products %}
+                <div class="featured-products-slider-wrapper">
+                    <div class="featured-products-slider" id="featuredProductsSlider">
+                        {% for product in featured_products %}
+                        <div class="featured-product-card" data-product-id="{{ product.id }}">
+                            <a href="#" class="product-link" data-slug="{{ product.slug }}">
+                                <div class="product-image-wrapper">
+                                    {% if product.get_image_url %}
+                                    <img src="{{ product.get_image_url }}" alt="{{ product.name }}" class="product-image">
+                                    {% else %}
+                                    <div class="product-image-placeholder">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                            <polyline points="21 15 16 10 5 21"></polyline>
+                                        </svg>
+                                    </div>
+                                    {% endif %}
+                                    <div class="product-overlay">
+                                        <span class="view-product">Ürünü Gör</span>
+                                    </div>
+                                </div>
+                                <div class="product-info">
+                                    <h3 class="product-name">{{ product.name }}</h3>
+                                    <p class="product-category">{{ product.category.name }}</p>
+                                </div>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="featured-products-empty">
+                    <p class="empty-message">Henüz öne çıkan ürün bulunmuyor.</p>
+                    <p class="empty-submessage">Admin panelinden ürün ekleyip "Öne Çıkan" olarak işaretleyerek burada görünmesini sağlayabilirsiniz.</p>
+                </div>
+                {% endif %}
+            </div>
+        </section>
     </main>
 
     <script src="{% static 'js/header.js' %}"></script>
     <script src="{% static 'js/carousel.js' %}"></script>
+    <script src="{% static 'js/featured-products.js' %}"></script>
 </body>
 </html>
 

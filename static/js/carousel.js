@@ -23,17 +23,14 @@ document.addEventListener('DOMContentLoaded', function() {
             // Titlebar'ı gizlemek için sabit parametreler
             let hideUiParams = 'ui_infos=0&ui_watermark=0';
             
-            // Index 0: Bir önceki model
-            // Index 1: Sahnedeki (ortadaki) model
-            // Index 2: Bir sonraki model
-            // Bu 3 model otomatik oynatılacak
-            if (index === 0 || index === 1 || index === 2) {
-                // Görünür olan 3 model için autostart ekle
+            // Sadece Index 1 (sahnedeki model) otomatik oynatılacak - performans için
+            if (index === 1) {
+                // Sadece aktif model için autostart ekle
                 if (!currentSrc.includes('autostart=1')) {
                     iframe.src = baseUrl + '?' + hideUiParams + '&autostart=1&autospin=0.2';
                 }
             } else {
-                // Görünmeyen modeller için autostart=0 yap (durdur)
+                // Diğer tüm modeller için autostart=0 yap (durdur)
                 if (currentSrc.includes('autostart=1') || !currentSrc.includes('autostart=0')) {
                     iframe.src = baseUrl + '?' + hideUiParams + '&autostart=0';
                 }

@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 :root{
     --item1-transform: translateX(-100%) translateY(-5%) scale(1.5);
-    --item1-filter: blur(30px);
+    --item1-filter: blur(10px);
     --item1-zIndex: 11;
     --item1-opacity: 0;
 
@@ -11,17 +11,17 @@
     --item2-opacity: 1;
 
     --item3-transform: translate(50%,10%) scale(0.8);
-    --item3-filter: blur(10px);
+    --item3-filter: blur(5px);
     --item3-zIndex: 9;
     --item3-opacity: 1;
 
     --item4-transform: translate(90%,20%) scale(0.5);
-    --item4-filter: blur(30px);
+    --item4-filter: blur(10px);
     --item4-zIndex: 8;
     --item4-opacity: 1;
     
     --item5-transform: translate(120%,30%) scale(0.3);
-    --item5-filter: blur(40px);
+    --item5-filter: blur(15px);
     --item5-zIndex: 7;
     --item5-opacity: 0;
     
@@ -38,6 +38,9 @@
     overflow: hidden;
     margin-top: -50px;
     background-color: #ffffff;
+    /* GPU acceleration */
+    will-change: transform;
+    transform: translateZ(0);
 }
 .carousel .list{
     position: absolute;
@@ -54,6 +57,9 @@
     height: 100%;
     font-size: 15px;
     transition: left 0.5s, opacity 0.5s, width 0.5s;
+    /* GPU acceleration for smoother animations */
+    will-change: transform, opacity, filter;
+    transform: translateZ(0);
 }
 
 .carousel .list .item:nth-child(n + 6){
@@ -62,6 +68,7 @@
 .carousel .list .item:nth-child(2){
     z-index: 10;
     transform: translateX(0);
+    pointer-events: auto;
 }
 
 .carousel .list .item:nth-child(2) .introduce {
@@ -73,7 +80,7 @@
     position: absolute;
     right: 0;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-40%);
     transition: right 1.5s;
 }
 
@@ -88,6 +95,11 @@
 
 .carousel .list .item .sketchfab-embed-wrapper {
     z-index: 1;
+    pointer-events: none;
+}
+/* Sadece aktif item (item 2) wrapper'ı etkileşimli olacak */
+.carousel .list .item:nth-child(2) .sketchfab-embed-wrapper {
+    pointer-events: auto;
 }
 
 .carousel .list .item .sketchfab-embed-wrapper iframe {
@@ -95,6 +107,13 @@
     height: 100%;
     border: none;
     border-radius: 8px;
+    pointer-events: none;
+    /* Smooth iframe rendering */
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+/* Sadece aktif item (item 2) iframe'i etkileşimli olacak */
+.carousel .list .item:nth-child(2) .sketchfab-embed-wrapper iframe {
     pointer-events: auto;
 }
 
@@ -107,6 +126,10 @@
     -ms-user-select: text;
     z-index: 10;
     position: relative;
+}
+/* Aktif olmayan itemlerin introduce bölümleri de etkileşimsiz olmalı */
+.carousel .list .item:not(:nth-child(2)) .introduce {
+    pointer-events: none !important;
 }
 .carousel .list .item:nth-child(2) .introduce{
     opacity: 1;
@@ -168,15 +191,20 @@
     opacity: var(--item1-opacity);
     pointer-events: none;
 }
+.carousel .list .item:nth-child(2){
+    pointer-events: auto;
+}
 .carousel .list .item:nth-child(3){
     transform: var(--item3-transform);
     filter: var(--item3-filter);
     z-index: var(--item3-zIndex);
+    pointer-events: none;
 }
 .carousel .list .item:nth-child(4){
     transform: var(--item4-transform);
     filter: var(--item4-filter);
     z-index: var(--item4-zIndex);
+    pointer-events: none;
 }
 .carousel .list .item:nth-child(5){
     transform: var(--item5-transform);
@@ -279,11 +307,16 @@
     pointer-events: none;
 }
 /* showDetail */
+.carousel.showDetail .list .item:nth-child(1),
 .carousel.showDetail .list .item:nth-child(3),
-.carousel.showDetail .list .item:nth-child(4){
+.carousel.showDetail .list .item:nth-child(4),
+.carousel.showDetail .list .item:nth-child(5){
     left: 100%;
     opacity: 0;
     pointer-events: none;
+}
+.carousel.showDetail .list .item:nth-child(2){
+    pointer-events: auto;
 }
 .carousel.showDetail .list .item:nth-child(2){
     width: 100%;
@@ -463,7 +496,7 @@
         height: 100%;
     }
     .carousel.showDetail .list .item:nth-child(2) .detail{
-        backdrop-filter: blur(10px);
+        backdrop-filter: blur(4px);
         font-size: small;
     }
     .carousel .list .item:nth-child(2) .introduce .des,
@@ -475,6 +508,366 @@
         display: flex;
         width: max-content;
         float: right;
+    }
+}
+
+/* Öne Çıkan Ürünler Bölümü - Lüks Modern Tasarım */
+.featured-products-section {
+    background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+    padding: 80px 0;
+    margin-top: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.featured-products-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
+}
+
+.featured-products-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.featured-products-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.featured-title {
+    font-size: 3.5em;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 15px;
+    letter-spacing: 2px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.featured-subtitle {
+    font-size: 1.1em;
+    color: #6b6b6b;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.featured-products-slider-wrapper {
+    position: relative;
+    padding: 0 60px;
+}
+
+.featured-products-slider {
+    display: flex;
+    gap: 30px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 20px 0;
+    cursor: grab;
+    user-select: none;
+    /* Scroll performansını iyileştir */
+    -webkit-overflow-scrolling: touch;
+    will-change: scroll-position;
+    transform: translateZ(0);
+}
+
+.featured-products-slider::-webkit-scrollbar {
+    display: none;
+}
+
+.featured-products-slider.dragging {
+    cursor: grabbing;
+    scroll-behavior: auto;
+}
+
+.featured-product-card {
+    flex: 0 0 320px;
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    /* GPU acceleration */
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.featured-product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(212, 175, 55, 0.25);
+}
+
+.featured-product-card .product-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.product-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    background: #f8f8f8;
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Smooth image transforms */
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+.featured-product-card:hover .product-image {
+    transform: scale(1.1);
+}
+
+.product-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #d0d0d0;
+    background: linear-gradient(135deg, #f8f8f8 0%, #e8e8e8 100%);
+}
+
+.product-image-placeholder svg {
+    width: 80px;
+    height: 80px;
+}
+
+.product-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(26, 26, 26, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.featured-product-card:hover .product-overlay {
+    opacity: 1;
+}
+
+.view-product {
+    color: #ffffff;
+    font-size: 1.1em;
+    font-weight: 500;
+    letter-spacing: 2px;
+    padding: 12px 30px;
+    border: 2px solid #ffffff;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+}
+
+.view-product:hover {
+    background: #ffffff;
+    color: #1a1a1a;
+}
+
+.product-info {
+    padding: 28px;
+    background: #ffffff;
+}
+
+.product-name {
+    font-size: 1.4em;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+    line-height: 1.3;
+    font-family: 'Poppins', sans-serif;
+}
+
+.product-category {
+    font-size: 0.9em;
+    color: #d4af37;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 15px;
+}
+
+.product-price {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: #1a1a1a;
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 1px;
+}
+
+/* Slider Butonları */
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid rgba(212, 175, 55, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.slider-btn:hover {
+    background: #d4af37;
+    border-color: #d4af37;
+    box-shadow: 0 6px 25px rgba(212, 175, 55, 0.4);
+}
+
+.slider-btn:hover svg {
+    color: #ffffff;
+}
+
+.slider-btn svg {
+    width: 24px;
+    height: 24px;
+    color: #1a1a1a;
+    transition: color 0.3s ease;
+}
+
+.slider-btn-prev {
+    left: 0;
+}
+
+.slider-btn-next {
+    right: 0;
+}
+
+.slider-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.slider-btn:disabled:hover {
+    background: #ffffff;
+    border-color: rgba(212, 175, 55, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.slider-btn:disabled:hover svg {
+    color: #1a1a1a;
+}
+
+/* Boş Durum Mesajı */
+.featured-products-empty {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.empty-message {
+    font-size: 1.5em;
+    font-weight: 500;
+    color: #6b6b6b;
+    margin-bottom: 15px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.empty-submessage {
+    font-size: 1em;
+    color: #999;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Responsive Tasarım */
+@media screen and (max-width: 991px) {
+    .featured-products-section {
+        padding: 60px 0;
+    }
+    
+    .featured-title {
+        font-size: 2.5em;
+    }
+    
+    .featured-products-slider-wrapper {
+        padding: 0 50px;
+    }
+    
+    .featured-product-card {
+        flex: 0 0 280px;
+    }
+    
+    .product-image-wrapper {
+        height: 350px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .featured-products-section {
+        padding: 40px 0;
+    }
+    
+    .featured-products-header {
+        margin-bottom: 40px;
+    }
+    
+    .featured-title {
+        font-size: 2em;
+    }
+    
+    .featured-subtitle {
+        font-size: 0.95em;
+    }
+    
+    .featured-products-slider-wrapper {
+        padding: 0 45px;
+    }
+    
+    .featured-product-card {
+        flex: 0 0 260px;
+    }
+    
+    .product-image-wrapper {
+        height: 300px;
+    }
+    
+    .product-info {
+        padding: 20px;
+    }
+    
+    .product-name {
+        font-size: 1.2em;
+    }
+    
+    .product-price {
+        font-size: 1.5em;
+    }
+    
+    .slider-btn {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .slider-btn svg {
+        width: 20px;
+        height: 20px;
     }
 }
 

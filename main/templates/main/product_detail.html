@@ -1,0 +1,134 @@
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block title %}{{ product.name }} - Sarac İhsan{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/product-detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="product-page">
+    <!-- Breadcrumb -->
+    <section class="breadcrumb-section">
+        <div class="container">
+            <nav class="breadcrumb">
+                <a href="/">Ana Sayfa</a>
+                <span class="breadcrumb-separator">/</span>
+                <a href="{% url 'category_detail' product.category.slug %}">{{ product.category.name }}</a>
+                <span class="breadcrumb-separator">/</span>
+                <span class="breadcrumb-current">{{ product.name }}</span>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Product Detail -->
+    <section class="product-detail-section">
+        <div class="container">
+            <div class="product-detail-grid">
+                <!-- Product Image -->
+                <div class="product-detail-image">
+                    {% if product.get_image_url %}
+                    <img src="{{ product.get_image_url }}" alt="{{ product.name }}" id="mainProductImage">
+                    {% else %}
+                    <div class="product-detail-placeholder">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Product Info -->
+                <div class="product-detail-info">
+                    {% if product.is_featured %}
+                    <span class="featured-badge-large">ÖNE ÇIKAN ÜRÜN</span>
+                    {% endif %}
+                    
+                    <h1 class="product-detail-title">{{ product.name }}</h1>
+                    
+                    <div class="product-detail-meta">
+                        <span class="product-category-badge">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 7h-4M8 7H4m16 0v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7m16 0V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v2"></path>
+                            </svg>
+                            {{ product.category.name }}
+                        </span>
+                    </div>
+
+                    {% if product.description %}
+                    <div class="product-detail-description">
+                        <h3 class="description-title">Açıklama</h3>
+                        <p class="description-text">{{ product.description }}</p>
+                    </div>
+                    {% endif %}
+
+                    <div class="product-detail-actions">
+                        <button class="btn btn-primary" type="button">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-8 2a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"></path>
+                            </svg>
+                            Sipariş Ver
+                        </button>
+                        <button class="btn btn-secondary" type="button">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"></path>
+                            </svg>
+                            Favorilere Ekle
+                        </button>
+                    </div>
+
+                    {% if product.stock > 0 %}
+                    <div class="stock-info">
+                        <span class="stock-available">✓ Stokta Var</span>
+                    </div>
+                    {% else %}
+                    <div class="stock-info">
+                        <span class="stock-unavailable">✗ Stokta Yok</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Products -->
+    {% if related_products %}
+    <section class="related-products-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Benzer Ürünler</h2>
+                <p class="section-subtitle">Aynı kategoriden diğer ürünler</p>
+            </div>
+            <div class="related-products-grid">
+                {% for related_product in related_products %}
+                <article class="product-card-small">
+                    <a href="{% url 'product_detail' related_product.slug %}" class="product-card-link">
+                        <div class="product-card-image">
+                            {% if related_product.get_image_url %}
+                            <img src="{{ related_product.get_image_url }}" alt="{{ related_product.name }}" loading="lazy">
+                            {% else %}
+                            <div class="product-placeholder">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                </svg>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="product-card-content">
+                            <h3 class="product-card-title">{{ related_product.name }}</h3>
+                        </div>
+                    </a>
+                </article>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+</main>
+{% endblock %}
+
