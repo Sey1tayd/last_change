@@ -35,7 +35,10 @@ class CategoryAdmin(admin.ModelAdmin):
     
     fieldsets = (
         ('Temel Bilgiler', {
-            'fields': ('name', 'slug', 'description', 'image_url')
+            'fields': ('name', 'slug', 'description')
+        }),
+        ('Görsel', {
+            'fields': ('image', 'image_url')
         }),
         ('Durum', {
             'fields': ('order', 'is_active')

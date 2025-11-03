@@ -71,11 +71,18 @@ class Category(models.Model):
         null=True,
         verbose_name="Açıklama"
     )
+    image = models.ImageField(
+        upload_to='categories/',
+        blank=True,
+        null=True,
+        verbose_name="Kategori Görseli",
+        help_text="Kategori kartında gösterilecek görsel"
+    )
     image_url = models.URLField(
         blank=True,
         null=True,
         verbose_name="Kategori Görseli URL",
-        help_text="Kategori kartında gösterilecek görsel URL'i"
+        help_text="Eğer görsel dosyası yoksa URL kullanın"
     )
     order = models.PositiveIntegerField(
         default=0,
@@ -98,8 +105,12 @@ class Category(models.Model):
     
     @property
     def get_image_url(self):
-        """Kategori görsel URL'ini döndürür"""
-        return self.image_url
+        """Görsel URL'ini döndürür - önce yüklenen görsel, sonra URL"""
+        if self.image:
+            return self.image.url
+        elif self.image_url:
+            return self.image_url
+        return None
 
 
 class Product(models.Model):

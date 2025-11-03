@@ -142,7 +142,7 @@ STATICFILES_DIRS = [static_dir] if static_dir.exists() else []
 # Use CompressedStaticFilesStorage for better compatibility
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
