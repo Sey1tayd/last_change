@@ -23,9 +23,16 @@ def create_superuser():
         print("SUPERUSER_USERNAME ve SUPERUSER_PASSWORD environment variables gereklidir.")
         return
     
-    # Eğer superuser zaten varsa oluşturma
+    # Eğer superuser zaten varsa şifresini güncelle
     if User.objects.filter(username=username).exists():
-        print(f"Superuser '{username}' zaten mevcut.")
+        user = User.objects.get(username=username)
+        user.set_password(password)
+        if email:
+            user.email = email
+        user.is_superuser = True
+        user.is_staff = True
+        user.save()
+        print(f"Superuser '{username}' şifresi güncellendi.")
         return
     
     try:
