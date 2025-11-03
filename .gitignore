@@ -16,7 +16,7 @@ db.sqlite3
 db.sqlite3-journal
 /media
 /staticfiles
-/static
+# /static - Static files should be in git for Railway
 
 # IDE
 .vscode/
