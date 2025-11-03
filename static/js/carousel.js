@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    // Sadece görünür olan modeli oynat, diğerlerini durdur
+    // Sahnedeki (ortadaki), bir önceki ve bir sonraki modeli oynat, diğerlerini durdur
     function updateModelPlayback() {
         let items = document.querySelectorAll('.carousel .list .item');
         items.forEach((item, index) => {
@@ -23,15 +23,17 @@ document.addEventListener('DOMContentLoaded', function() {
             // Titlebar'ı gizlemek için sabit parametreler
             let hideUiParams = 'ui_infos=0&ui_watermark=0';
             
-            // 2. item (index 1) görünür olan modeldir
-            if (index === 1) {
-                // Görünür model için autostart ekle
+            // Index 0: Bir önceki model
+            // Index 1: Sahnedeki (ortadaki) model
+            // Index 2: Bir sonraki model
+            // Bu 3 model otomatik oynatılacak
+            if (index === 0 || index === 1 || index === 2) {
+                // Görünür olan 3 model için autostart ekle
                 if (!currentSrc.includes('autostart=1')) {
                     iframe.src = baseUrl + '?' + hideUiParams + '&autostart=1&autospin=0.2';
                 }
             } else {
                 // Görünmeyen modeller için autostart=0 yap (durdur)
-                // Mevcut parametreleri temizle ve sadece autostart=0 ekle
                 if (currentSrc.includes('autostart=1') || !currentSrc.includes('autostart=0')) {
                     iframe.src = baseUrl + '?' + hideUiParams + '&autostart=0';
                 }
@@ -39,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // İlk yüklemede sadece görünür modeli oynat
+    // İlk yüklemede görünür 3 modeli oynat (bir önceki, sahne, bir sonraki)
     setTimeout(updateModelPlayback, 500);
 
     nextButton.onclick = function(){
