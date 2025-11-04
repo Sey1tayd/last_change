@@ -17,9 +17,13 @@ document.addEventListener('DOMContentLoaded', function() {
     let isScrolling = false;
     
     function calculateOriginalWidth() {
+        // Önce scroll pozisyonunu kaydet ve isScrolling flag'ini ayarla
+        const savedScroll = slider.scrollLeft;
+        isScrolling = true;
+        
         // En basit ve doğru yöntem: slider'ın toplam genişliğinin yarısı
         // Çünkü içeriği ikiye böldük (orijinal + kopya)
-        originalWidth = slider.scrollWidth / 2;
+        let calculatedWidth = slider.scrollWidth / 2;
         
         // Alternatif: İkinci setin başlangıç pozisyonunu kullan (daha doğru)
         const cards = slider.querySelectorAll('.featured-product-card');
@@ -27,43 +31,91 @@ document.addEventListener('DOMContentLoaded', function() {
             const midIndex = Math.floor(cards.length / 2);
             if (cards[midIndex]) {
                 const midCardLeft = cards[midIndex].offsetLeft;
-                if (midCardLeft > 0) {
-                    originalWidth = midCardLeft;
+                if (midCardLeft > 0 && midCardLeft < calculatedWidth * 1.5) {
+                    calculatedWidth = midCardLeft;
                 }
             }
         }
+        
+        // Sadece geçerli bir genişlik varsa güncelle
+        if (calculatedWidth > 0 && isFinite(calculatedWidth)) {
+            originalWidth = calculatedWidth;
+        }
+        
+        // Scroll pozisyonunu geri yükle
+        requestAnimationFrame(function() {
+            slider.scrollLeft = savedScroll;
+            setTimeout(function() {
+                isScrolling = false;
+            }, 50);
+        });
     }
     
     // Sayfa yüklendikten sonra genişliği hesapla
-    setTimeout(function() {
+    let initTimeout;
+    let isInitialized = false;
+    
+    function initializeSlider() {
+        if (isInitialized) return;
+        isInitialized = true;
+        
         calculateOriginalWidth();
         // Scroll pozisyonunu orijinal içeriğin başlangıcına ayarla
-        slider.scrollLeft = 0;
-    }, 100);
+        isScrolling = true; // İlk yüklemede scroll event'ini engelle
+        requestAnimationFrame(function() {
+            slider.scrollLeft = 0;
+            setTimeout(function() {
+                isScrolling = false;
+            }, 300);
+        });
+    }
+    
+    // İlk yükleme - DOMContentLoaded zaten tetiklenmiş (zaten içindeyiz)
+    initTimeout = setTimeout(initializeSlider, 300);
+    
+    // Görüntüler yüklendiğinde de kontrol et (genişlik hesaplaması için)
+    window.addEventListener('load', function() {
+        clearTimeout(initTimeout);
+        isInitialized = false; // Yeniden hesaplama için reset
+        initTimeout = setTimeout(initializeSlider, 150);
+    });
     
     // Scroll event listener - sonsuz döngü için
+    let scrollTimeout;
     slider.addEventListener('scroll', function() {
-        if (isScrolling) return;
-        
-        // Eğer klonun başına geldiysek (orijinal genişliğe ulaştıysak)
-        if (slider.scrollLeft >= originalWidth) {
-            isScrolling = true;
-            // Sessizce orijinal başlangıca dön (animasyon yok)
-            slider.scrollLeft = slider.scrollLeft - originalWidth;
-            setTimeout(function() {
-                isScrolling = false;
-            }, 50);
-        }
-        // Eğer geriye kaydırıyorsak ve başa geldiysek
-        else if (slider.scrollLeft <= 0 && originalWidth > 0) {
-            isScrolling = true;
-            // Orijinal sona git
-            slider.scrollLeft = originalWidth;
-            setTimeout(function() {
-                isScrolling = false;
-            }, 50);
-        }
-    });
+        // Throttle scroll events - sadece belirli aralıklarla kontrol et
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(function() {
+            if (isScrolling || originalWidth <= 0) return;
+            
+            const currentScroll = slider.scrollLeft;
+            const tolerance = 5; // Küçük tolerans değeri
+            
+            // Eğer klonun başına geldiysek (orijinal genişliğe ulaştıysak)
+            if (currentScroll >= originalWidth - tolerance) {
+                isScrolling = true;
+                // Sessizce orijinal başlangıca dön (animasyon yok)
+                // scroll event'ini tetiklememek için requestAnimationFrame kullan
+                requestAnimationFrame(function() {
+                    slider.scrollLeft = currentScroll - originalWidth;
+                    setTimeout(function() {
+                        isScrolling = false;
+                    }, 100);
+                });
+            }
+            // Eğer geriye kaydırıyorsak ve başa geldiysek
+            else if (currentScroll <= tolerance) {
+                isScrolling = true;
+                // Orijinal sona git - scroll event'ini tetiklememek için requestAnimationFrame kullan
+                requestAnimationFrame(function() {
+                    slider.scrollLeft = originalWidth + currentScroll;
+                    setTimeout(function() {
+                        isScrolling = false;
+                    }, 100);
+                });
+            }
+        }, 10); // Her 10ms'de bir kontrol et (throttle)
+    }, { passive: true });
 
     // Drag/Swipe functionality
     let isDown = false;
@@ -179,10 +231,33 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Resize event - genişliği yeniden hesapla
     let resizeTimeout;
+    let isResizing = false;
     window.addEventListener('resize', function() {
+        if (isResizing) return;
+        isResizing = true;
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(function() {
+            const savedScroll = slider.scrollLeft;
+            const oldWidth = originalWidth;
             calculateOriginalWidth();
+            // Genişlik değiştiyse scroll pozisyonunu normalize et
+            if (oldWidth > 0 && originalWidth > 0 && oldWidth !== originalWidth) {
+                requestAnimationFrame(function() {
+                    isScrolling = true;
+                    let normalizedScroll = (savedScroll / oldWidth) * originalWidth;
+                    // Orijinal genişlik sınırları içinde tut
+                    if (normalizedScroll >= originalWidth) {
+                        normalizedScroll = normalizedScroll % originalWidth;
+                    }
+                    slider.scrollLeft = Math.max(0, Math.min(normalizedScroll, originalWidth));
+                    setTimeout(function() {
+                        isScrolling = false;
+                        isResizing = false;
+                    }, 150);
+                });
+            } else {
+                isResizing = false;
+            }
         }, 250);
     });
 });
