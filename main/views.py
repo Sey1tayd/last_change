@@ -1,7 +1,18 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
-from .models import CarouselItem, Category, Product
+from django.contrib import messages
+from django.views.decorators.http import require_http_methods
+from django.http import JsonResponse
+from django.conf import settings
+from .models import CarouselItem, Category, Product, Order
+from .forms import OrderForm
+from .cart_utils import (
+    add_to_cart, remove_from_cart, clear_cart,
+    get_cart_count, get_cart_items, get_cart,
+    update_cart_quantity
+)
 import random
+import json
 
 
 def home(request):
@@ -47,6 +58,7 @@ def home(request):
         'carousel_items': carousel_items,
         'featured_products': featured_products,
         'categories': categories,
+        'cart_count': get_cart_count(request),
     }
     return render(request, 'main/home.html', context)
 
@@ -63,6 +75,7 @@ def category_detail(request, slug):
         'category': category,
         'products': products,
         'categories': categories,
+        'cart_count': get_cart_count(request),
     }
     return render(request, 'main/category_detail.html', context)
 
@@ -84,6 +97,8 @@ def product_detail(request, slug):
         'product': product,
         'related_products': related_products,
         'categories': categories,
+        'whatsapp_phone': getattr(settings, 'WHATSAPP_PHONE', '905551234567'),
+        'cart_count': get_cart_count(request),
     }
     return render(request, 'main/product_detail.html', context)
 
@@ -107,6 +122,133 @@ def search(request):
         'query': query,
         'products': products,
         'categories': categories,
+        'cart_count': get_cart_count(request),
     }
     return render(request, 'main/search.html', context)
+
+
+@require_http_methods(["POST"])
+def add_to_cart_view(request):
+    """Sepete ürün ekle (AJAX)"""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            product_id = data.get('product_id')
+            product_name = data.get('product_name')
+            
+            if not product_id or not product_name:
+                return JsonResponse({'success': False, 'error': 'Eksik bilgi'}, status=400)
+            
+            add_to_cart(request, product_id, product_name)
+            cart_count = get_cart_count(request)
+            
+            return JsonResponse({
+                'success': True,
+                'cart_count': cart_count,
+                'message': 'Ürün sepete eklendi!'
+            })
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+    
+    return JsonResponse({'success': False, 'error': 'Geçersiz istek'}, status=400)
+
+
+def cart_view(request):
+    """Sepet sayfası"""
+    cart_items = get_cart_items(request)
+    categories = Category.objects.filter(is_active=True).order_by('order', 'name')
+    whatsapp_phone = getattr(settings, 'WHATSAPP_PHONE', '905551234567')
+    
+    context = {
+        'cart_items': cart_items,
+        'categories': categories,
+        'cart_count': get_cart_count(request),
+        'whatsapp_phone': whatsapp_phone,
+    }
+    return render(request, 'main/cart.html', context)
+
+
+@require_http_methods(["POST"])
+def remove_from_cart_view(request, product_id):
+    """Sepetten ürün çıkar"""
+    remove_from_cart(request, product_id)
+    cart_count = get_cart_count(request)
+    
+    return JsonResponse({
+        'success': True,
+        'cart_count': cart_count,
+        'message': 'Ürün sepetten çıkarıldı'
+    })
+
+
+@require_http_methods(["POST"])
+def update_quantity_view(request, product_id):
+    """Sepetteki ürün adedini güncelle"""
+    try:
+        data = json.loads(request.body)
+        quantity = int(data.get('quantity', 1))
+        
+        if quantity < 1:
+            return JsonResponse({'success': False, 'error': 'Adet en az 1 olmalı'}, status=400)
+        
+        # product_id'yi string'e çevir (session'da string olarak tutuluyor)
+        product_id_str = str(product_id)
+        update_cart_quantity(request, product_id_str, quantity)
+        cart_count = get_cart_count(request)
+        
+        # Güncellenmiş ürün bilgisini al
+        cart = get_cart(request)
+        product_quantity = cart.get(product_id_str, {}).get('quantity', 0)
+        
+        return JsonResponse({
+            'success': True,
+            'cart_count': cart_count,
+            'quantity': product_quantity,
+            'message': 'Adet güncellendi'
+        })
+    except (ValueError, KeyError) as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=400)
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+def send_cart_whatsapp(request):
+    """Sepetteki ürünleri WhatsApp ile gönder"""
+    from urllib.parse import quote
+    
+    cart_items = get_cart_items(request)
+    
+    if not cart_items:
+        messages.warning(request, 'Sepetiniz boş!')
+        return redirect('cart')
+    
+    whatsapp_phone = getattr(settings, 'WHATSAPP_PHONE', '905551234567')
+    
+    # WhatsApp mesajı oluştur
+    message_lines = [
+        'Merhaba! Sepetimdeki ürünleri sipariş vermek istiyorum.\n',
+        '📦 SEPETİM:\n'
+    ]
+    
+    for item in cart_items:
+        product = item['product']
+        quantity = item['quantity']
+        message_lines.append(f'• {product.name} (x{quantity})')
+        message_lines.append(f'  Kategori: {product.category.name}')
+        if product.price:
+            message_lines.append(f'  Fiyat: {product.price} TL')
+        message_lines.append('')
+    
+    message_lines.append(f'\nToplam {len(cart_items)} ürün')
+    message = '\n'.join(message_lines)
+    
+    # WhatsApp URL oluştur (encode edilmiş mesaj)
+    encoded_message = quote(message)
+    whatsapp_url = f'https://wa.me/{whatsapp_phone}?text={encoded_message}'
+    
+    # Sepeti temizle
+    clear_cart(request)
+    
+    # WhatsApp'ı yeni sekmede aç
+    return redirect(whatsapp_url)
 

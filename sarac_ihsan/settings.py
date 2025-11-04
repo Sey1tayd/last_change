@@ -150,3 +150,6 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# WhatsApp Configuration
+WHATSAPP_PHONE = os.environ.get('WHATSAPP_PHONE', '905551234567')  # Varsayılan: 905551234567 (başında 90 olmadan sadece ülke kodu + numara)
+

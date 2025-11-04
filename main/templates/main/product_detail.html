@@ -66,29 +66,13 @@
                     {% endif %}
 
                     <div class="product-detail-actions">
-                        <button class="btn btn-primary" type="button">
+                        <a href="#" class="btn btn-primary" id="addToCartButton" data-product-id="{{ product.id }}" data-product-name="{{ product.name }}" data-product-category="{{ product.category.name }}">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-8 2a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"></path>
                             </svg>
-                            Sipariş Ver
-                        </button>
-                        <button class="btn btn-secondary" type="button">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"></path>
-                            </svg>
-                            Favorilere Ekle
-                        </button>
+                            Sepete Ekle
+                        </a>
                     </div>
-
-                    {% if product.stock > 0 %}
-                    <div class="stock-info">
-                        <span class="stock-available">✓ Stokta Var</span>
-                    </div>
-                    {% else %}
-                    <div class="stock-info">
-                        <span class="stock-unavailable">✗ Stokta Yok</span>
-                    </div>
-                    {% endif %}
                 </div>
             </div>
         </div>
@@ -129,6 +113,57 @@
         </div>
     </section>
     {% endif %}
+
 </main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const addToCartButton = document.getElementById('addToCartButton');
+    
+    if (addToCartButton) {
+        addToCartButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const productId = this.getAttribute('data-product-id');
+            const productName = this.getAttribute('data-product-name');
+            
+            // Sepete ekle (AJAX)
+            fetch('{% url "add_to_cart" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    product_id: productId,
+                    product_name: productName
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Sepet badge'ini güncelle
+                    const cartBadge = document.getElementById('cartBadge');
+                    if (cartBadge) {
+                        cartBadge.textContent = data.cart_count;
+                        cartBadge.style.display = data.cart_count > 0 ? 'flex' : 'none';
+                    }
+                    
+                    // Başarı mesajı göster
+                    alert('Ürün sepete eklendi!');
+                } else {
+                    alert('Bir hata oluştu: ' + (data.error || 'Bilinmeyen hata'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+            });
+        });
+    }
+});
+</script>
 {% endblock %}
 

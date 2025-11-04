@@ -186,3 +186,56 @@ class Product(models.Model):
         elif self.image_url:
             return self.image_url
         return None
+
+
+class Order(models.Model):
+    """Sipariş modeli"""
+    STATUS_CHOICES = [
+        ('pending', 'Beklemede'),
+        ('confirmed', 'Onaylandı'),
+        ('cancelled', 'İptal Edildi'),
+    ]
+    
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='orders',
+        verbose_name="Ürün"
+    )
+    customer_name = models.CharField(
+        max_length=100,
+        verbose_name="Müşteri Adı"
+    )
+    customer_phone = models.CharField(
+        max_length=20,
+        verbose_name="Telefon"
+    )
+    customer_email = models.EmailField(
+        blank=True,
+        null=True,
+        verbose_name="E-posta"
+    )
+    customer_address = models.TextField(
+        verbose_name="Adres"
+    )
+    message = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name="Mesaj/Not"
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='pending',
+        verbose_name="Durum"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Sipariş"
+        verbose_name_plural = "Siparişler"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.customer_name} - {self.product.name} ({self.get_status_display()})"

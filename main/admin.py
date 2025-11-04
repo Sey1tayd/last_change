@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CarouselItem, Category, Product
+from .models import CarouselItem, Category, Product, Order
 
 
 @admin.register(CarouselItem)
@@ -68,5 +68,31 @@ class ProductAdmin(admin.ModelAdmin):
         }),
         ('Durum', {
             'fields': ('is_featured', 'is_active')
+        }),
+    )
+
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ['customer_name', 'product', 'customer_phone', 'status', 'created_at']
+    list_filter = ['status', 'created_at']
+    search_fields = ['customer_name', 'customer_phone', 'customer_email', 'product__name']
+    list_editable = ['status']
+    ordering = ['-created_at']
+    readonly_fields = ['created_at', 'updated_at']
+    
+    fieldsets = (
+        ('Sipariş Bilgileri', {
+            'fields': ('product', 'status')
+        }),
+        ('Müşteri Bilgileri', {
+            'fields': ('customer_name', 'customer_phone', 'customer_email', 'customer_address')
+        }),
+        ('Mesaj/Not', {
+            'fields': ('message',)
+        }),
+        ('Tarih Bilgileri', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
         }),
     )
