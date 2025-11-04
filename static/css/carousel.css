@@ -357,19 +357,26 @@
 .carousel.showDetail .list .item:nth-child(2) .detail .specifications div p:nth-child(1){
     font-weight: bold;
 }
-.carousel.carousel.showDetail .list .item:nth-child(2) .checkout button{
+.carousel.carousel.showDetail .list .item:nth-child(2) .checkout button,
+.carousel.carousel.showDetail .list .item:nth-child(2) .checkout .add-to-cart-btn{
     font-family: Poppins;
-    background-color: transparent;
-    border: 1px solid #5555;
-    margin-left: 5px;
-    padding: 5px 10px;
-    letter-spacing: 2px;
-    font-weight: 500;
+    background-color: #d4af37;
+    color: #fff;
+    border: none;
+    margin: 0;
+    padding: 12px 30px;
+    letter-spacing: 1px;
+    font-weight: 600;
     cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    width: 100%;
 }
-.carousel.carousel.showDetail .list .item:nth-child(2) .checkout button:nth-child(2){
-    background-color: #693EFF;
-    color: #eee;
+
+.carousel.carousel.showDetail .list .item:nth-child(2) .checkout .add-to-cart-btn:hover{
+    background-color: #c9a528;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
 }
 .carousel.showDetail .list .item:nth-child(2) .detail  .title,
 .carousel.showDetail .list .item:nth-child(2) .detail  .des,
