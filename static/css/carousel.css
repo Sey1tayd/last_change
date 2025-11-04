@@ -357,26 +357,16 @@
 .carousel.showDetail .list .item:nth-child(2) .detail .specifications div p:nth-child(1){
     font-weight: bold;
 }
-.carousel.carousel.showDetail .list .item:nth-child(2) .checkout button,
-.carousel.carousel.showDetail .list .item:nth-child(2) .checkout .add-to-cart-btn{
+.carousel.carousel.showDetail .list .item:nth-child(2) .checkout .cart-info-text{
     font-family: Poppins;
-    background-color: #d4af37;
-    color: #fff;
-    border: none;
+    color: #6b6b6b;
     margin: 0;
-    padding: 12px 30px;
-    letter-spacing: 1px;
-    font-weight: 600;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-    width: 100%;
-}
-
-.carousel.carousel.showDetail .list .item:nth-child(2) .checkout .add-to-cart-btn:hover{
-    background-color: #c9a528;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+    padding: 1rem 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    text-align: center;
+    font-weight: 400;
+    letter-spacing: 0.3px;
 }
 .carousel.showDetail .list .item:nth-child(2) .detail  .title,
 .carousel.showDetail .list .item:nth-child(2) .detail  .des,
