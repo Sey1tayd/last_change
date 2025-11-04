@@ -239,7 +239,10 @@ def send_cart_whatsapp(request):
         product = item['product']
         quantity = item['quantity']
         total_quantity += quantity
+        # Ürün linkini oluştur
+        product_url = request.build_absolute_uri(f'/urun/{product.slug}/')
         message_lines.append(f'• {product.name} - {quantity} adet')
+        message_lines.append(f'  {product_url}')
     
     message_lines.append('')
     message_lines.append(f'Toplam: {len(cart_items)} çeşit ürün, {total_quantity} adet')

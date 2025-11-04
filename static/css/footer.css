@@ -1,11 +1,13 @@
-/* Footer Styles */
+/* Footer Styles - White Lux Theme */
 .footer {
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-    color: #ffffff;
+    background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+    color: #1a1a1a;
     padding: 3rem 0 1.5rem;
     margin-top: auto;
     width: 100%;
     clear: both;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.05);
 }
 
 .footer-container {
@@ -25,7 +27,7 @@
     font-size: 1.25rem;
     font-weight: 700;
     margin-bottom: 1.25rem;
-    color: #d4af37;
+    color: #1a1a1a;
     letter-spacing: 0.5px;
 }
 
@@ -40,7 +42,7 @@
 }
 
 .footer-section ul li a {
-    color: #e0e0e0;
+    color: #6b6b6b;
     text-decoration: none;
     font-size: 0.95rem;
     transition: all 0.3s ease;
@@ -53,7 +55,7 @@
 }
 
 .footer-section p {
-    color: #e0e0e0;
+    color: #6b6b6b;
     font-size: 0.95rem;
     line-height: 1.6;
     margin-bottom: 0.75rem;
@@ -75,19 +77,19 @@
 }
 
 .footer-contact-item span {
-    color: #e0e0e0;
+    color: #6b6b6b;
     font-size: 0.95rem;
     line-height: 1.5;
 }
 
 .footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
     padding-top: 1.5rem;
     text-align: center;
 }
 
 .footer-bottom p {
-    color: #b0b0b0;
+    color: #6b6b6b;
     font-size: 0.9rem;
     margin: 0;
 }
