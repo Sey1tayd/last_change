@@ -38,17 +38,23 @@ body {
   padding: 0 2rem;
 }
 
+.header-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 1050;
+  background: var(--lux-bg-white);
+  /* GPU acceleration for sticky header */
+  will-change: transform;
+  transform: translateZ(0);
+}
+
 .header {
   background: var(--lux-bg-white);
   border-bottom: 1px solid var(--lux-border);
   box-shadow: var(--lux-shadow);
-  position: sticky;
-  top: 0;
-  z-index: 1050;
   backdrop-filter: blur(8px);
-  /* GPU acceleration for sticky header */
-  will-change: transform;
-  transform: translateZ(0);
+  /* Navbar boyutunun sabit kalmas iAin */
+  min-height: 68px;
 }
 
 .header__row {
@@ -60,6 +66,8 @@ body {
   justify-content: space-between;
   gap: 2rem;
   position: relative;
+  /* Navbar içeriğinin sabit boyutta kalması için */
+  min-height: 68px;
 }
 
 /* Logo Styles */
@@ -326,9 +334,6 @@ body {
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--lux-border);
   box-shadow: var(--lux-shadow-soft);
-  position: sticky;
-  top: 68px;
-  z-index: 1040;
   /* GPU acceleration */
   will-change: transform;
   transform: translateZ(0);

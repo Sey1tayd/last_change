@@ -10,53 +10,55 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <header class="header" role="banner">
-        <div class="container header__row">
-            <a class="logo" href="/">
-                <img src="{% static 'images/logo.png' %}" alt="Sarac İhsan At Ekipmanları Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-                <span style="display:none;">Sarac İhsan</span>
-            </a>
-            <form class="search" role="search" action="{% url 'search' %}" method="get">
-                <input type="search" name="q" placeholder="Ürün ara..." value="{% if query %}{{ query }}{% endif %}">
-                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <path d="m21 21-4.35-4.35"></path>
-                </svg>
-            </form>
-            <nav class="header__actions">
-                <a class="action" href="{% url 'cart' %}" aria-label="Sepet" id="cartLink">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="8" cy="21" r="1"></circle>
-                        <circle cx="19" cy="21" r="1"></circle>
-                        <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
-                    </svg>
-                    {% if cart_count and cart_count > 0 %}
-                    <span class="cart-badge" id="cartBadge">{{ cart_count }}</span>
-                    {% else %}
-                    <span class="cart-badge" id="cartBadge" style="display: none;">0</span>
-                    {% endif %}
+    <div class="header-wrapper">
+        <header class="header" role="banner">
+            <div class="container header__row">
+                <a class="logo" href="/">
+                    <img src="{% static 'images/logo.png' %}" alt="Sarac İhsan At Ekipmanları Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                    <span style="display:none;">Sarac İhsan</span>
                 </a>
-            </nav>
-            <button class="mobile-menu-toggle" aria-label="Kategorileri Aç" id="mobileMenuToggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </div>
-    </header>
+                <form class="search" role="search" action="{% url 'search' %}" method="get">
+                    <input type="search" name="q" placeholder="Ürün ara..." value="{% if query %}{{ query }}{% endif %}">
+                    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </form>
+                <nav class="header__actions">
+                    <a class="action" href="{% url 'cart' %}" aria-label="Sepet" id="cartLink">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="8" cy="21" r="1"></circle>
+                            <circle cx="19" cy="21" r="1"></circle>
+                            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
+                        </svg>
+                        {% if cart_count and cart_count > 0 %}
+                        <span class="cart-badge" id="cartBadge">{{ cart_count }}</span>
+                        {% else %}
+                        <span class="cart-badge" id="cartBadge" style="display: none;">0</span>
+                        {% endif %}
+                    </a>
+                </nav>
+                <button class="mobile-menu-toggle" aria-label="Kategorileri Aç" id="mobileMenuToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
 
-    <!-- Categories Navigation - Desktop -->
-    <nav class="categories-nav" role="navigation">
-        <div class="container">
-            <ul class="categories-list">
-                {% for category in categories %}
-                <li><a href="{% url 'category_detail' category.slug %}">{{ category.name }}</a></li>
-                {% empty %}
-                <li><a href="#">Kategori bulunamadı</a></li>
-                {% endfor %}
-            </ul>
-        </div>
-    </nav>
+        <!-- Categories Navigation - Desktop -->
+        <nav class="categories-nav" role="navigation">
+            <div class="container">
+                <ul class="categories-list">
+                    {% for category in categories %}
+                    <li><a href="{% url 'category_detail' category.slug %}">{{ category.name }}</a></li>
+                    {% empty %}
+                    <li><a href="#">Kategori bulunamadı</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </nav>
+    </div>
 
     <!-- Mobile Categories Drawer -->
     <div class="mobile-categories-overlay" id="mobileCategoriesOverlay"></div>

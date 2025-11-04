@@ -199,9 +199,9 @@
 }
 
 .product-card-category {
-    font-size: 0.9rem;
-    color: var(--lux-gold);
-    font-weight: 500;
+    font-size: 1rem;
+    color: #8b6914;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
