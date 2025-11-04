@@ -200,5 +200,12 @@ def upload_category_images():
     print("\nKategori görselleri Railway'e deploy edildiğinde otomatik olarak yüklenecek.")
 
 if __name__ == '__main__':
-    upload_category_images()
+    try:
+        upload_category_images()
+    except Exception as e:
+        print(f"⚠ Kategori görselleri yüklenirken hata oluştu: {str(e)}")
+        print("Deploy devam ediyor...")
+        # Hata olsa bile deploy'un devam etmesi için exit(0)
+        import sys
+        sys.exit(0)
 
