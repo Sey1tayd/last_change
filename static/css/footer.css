@@ -1,0 +1,125 @@
+/* Footer Styles */
+.footer {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    color: #ffffff;
+    padding: 3rem 0 1.5rem;
+    margin-top: 4rem;
+}
+
+.footer-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2.5rem;
+    margin-bottom: 2rem;
+}
+
+.footer-section h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+    color: #d4af37;
+    letter-spacing: 0.5px;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-section ul li {
+    margin-bottom: 0.75rem;
+}
+
+.footer-section ul li a {
+    color: #e0e0e0;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.footer-section ul li a:hover {
+    color: #d4af37;
+    transform: translateX(5px);
+}
+
+.footer-section p {
+    color: #e0e0e0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+}
+
+.footer-contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.footer-contact-item svg {
+    width: 20px;
+    height: 20px;
+    color: #d4af37;
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+}
+
+.footer-contact-item span {
+    color: #e0e0e0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1.5rem;
+    text-align: center;
+}
+
+.footer-bottom p {
+    color: #b0b0b0;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.footer-bottom a {
+    color: #d4af37;
+    text-decoration: none;
+}
+
+.footer-bottom a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .footer {
+        padding: 2rem 0 1rem;
+        margin-top: 2rem;
+    }
+    
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .footer-section h3 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .footer-section ul li a,
+    .footer-section p,
+    .footer-contact-item span {
+        font-size: 0.9rem;
+    }
+}
+

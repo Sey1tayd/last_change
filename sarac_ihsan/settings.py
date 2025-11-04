@@ -73,6 +73,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'main.context_processors.categories',
             ],
         },
     },
@@ -151,5 +152,5 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # WhatsApp Configuration
-WHATSAPP_PHONE = os.environ.get('WHATSAPP_PHONE', '905551234567')  # Varsayılan: 905551234567 (başında 90 olmadan sadece ülke kodu + numara)
+WHATSAPP_PHONE = os.environ.get('WHATSAPP_PHONE', '905350434796')  # Varsayılan: 905350434796
 

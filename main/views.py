@@ -97,7 +97,7 @@ def product_detail(request, slug):
         'product': product,
         'related_products': related_products,
         'categories': categories,
-        'whatsapp_phone': getattr(settings, 'WHATSAPP_PHONE', '905551234567'),
+        'whatsapp_phone': getattr(settings, 'WHATSAPP_PHONE', '905350434796'),
         'cart_count': get_cart_count(request),
     }
     return render(request, 'main/product_detail.html', context)
@@ -157,7 +157,7 @@ def cart_view(request):
     """Sepet sayfası"""
     cart_items = get_cart_items(request)
     categories = Category.objects.filter(is_active=True).order_by('order', 'name')
-    whatsapp_phone = getattr(settings, 'WHATSAPP_PHONE', '905551234567')
+    whatsapp_phone = getattr(settings, 'WHATSAPP_PHONE', '905350434796')
     
     context = {
         'cart_items': cart_items,
@@ -222,24 +222,30 @@ def send_cart_whatsapp(request):
         messages.warning(request, 'Sepetiniz boş!')
         return redirect('cart')
     
-    whatsapp_phone = getattr(settings, 'WHATSAPP_PHONE', '905551234567')
+    whatsapp_phone = getattr(settings, 'WHATSAPP_PHONE', '905350434796')
     
     # WhatsApp mesajı oluştur
     message_lines = [
-        'Merhaba! Sepetimdeki ürünleri sipariş vermek istiyorum.\n',
-        '📦 SEPETİM:\n'
+        'Merhaba!',
+        '',
+        'Şu ürünlerden şu adetlerde istiyorum, bilgi alabilir miyim?',
+        '',
+        '📦 ÜRÜNLER:',
+        ''
     ]
     
+    total_quantity = 0
     for item in cart_items:
         product = item['product']
         quantity = item['quantity']
-        message_lines.append(f'• {product.name} (x{quantity})')
-        message_lines.append(f'  Kategori: {product.category.name}')
-        if product.price:
-            message_lines.append(f'  Fiyat: {product.price} TL')
-        message_lines.append('')
+        total_quantity += quantity
+        message_lines.append(f'• {product.name} - {quantity} adet')
     
-    message_lines.append(f'\nToplam {len(cart_items)} ürün')
+    message_lines.append('')
+    message_lines.append(f'Toplam: {len(cart_items)} çeşit ürün, {total_quantity} adet')
+    message_lines.append('')
+    message_lines.append('Bilgi alabilir miyim?')
+    
     message = '\n'.join(message_lines)
     
     # WhatsApp URL oluştur (encode edilmiş mesaj)
