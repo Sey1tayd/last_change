@@ -3,7 +3,9 @@
     background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
     color: #ffffff;
     padding: 3rem 0 1.5rem;
-    margin-top: 4rem;
+    margin-top: auto;
+    width: 100%;
+    clear: both;
 }
 
 .footer-container {

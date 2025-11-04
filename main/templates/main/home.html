@@ -1,80 +1,15 @@
+{% extends "main/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sarac İhsan - At Ekipmanları</title>
-    <link rel="stylesheet" href="{% static 'css/header.css' %}">
-    <link rel="stylesheet" href="{% static 'css/carousel.css' %}">
-    <link rel="stylesheet" href="{% static 'css/categories-grid.css' %}">
-</head>
-<body>
-    <header class="header" role="banner">
-        <div class="container header__row">
-            <a class="logo" href="/">
-                <img src="{% static 'images/logo.png' %}" alt="Sarac İhsan At Ekipmanları Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-                <span style="display:none;">Sarac İhsan</span>
-            </a>
-            <form class="search" role="search" action="{% url 'search' %}" method="get">
-                <input type="search" name="q" placeholder="Ürün ara...">
-                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <path d="m21 21-4.35-4.35"></path>
-                </svg>
-            </form>
-            <nav class="header__actions">
-                <a class="action" href="#" aria-label="Sepet">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="8" cy="21" r="1"></circle>
-                        <circle cx="19" cy="21" r="1"></circle>
-                        <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
-                    </svg>
-                </a>
-            </nav>
-            <button class="mobile-menu-toggle" aria-label="Kategorileri Aç" id="mobileMenuToggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </div>
-    </header>
 
-    <!-- Categories Navigation - Desktop -->
-    <nav class="categories-nav" role="navigation">
-        <div class="container">
-            <ul class="categories-list">
-                {% for category in categories %}
-                <li><a href="{% url 'category_detail' category.slug %}">{{ category.name }}</a></li>
-                {% empty %}
-                <li><a href="#">Kategori bulunamadı</a></li>
-                {% endfor %}
-            </ul>
-        </div>
-    </nav>
+{% block title %}Sarac İhsan - At Ekipmanları{% endblock %}
 
-    <!-- Mobile Categories Drawer -->
-    <div class="mobile-categories-overlay" id="mobileCategoriesOverlay"></div>
-    <nav class="mobile-categories-drawer" id="mobileCategoriesDrawer">
-        <div class="mobile-categories-header">
-            <h2>Kategoriler</h2>
-            <button class="mobile-categories-close" id="mobileCategoriesClose" aria-label="Menüyü Kapat">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
-        </div>
-        <ul class="mobile-categories-list">
-            {% for category in categories %}
-            <li><a href="{% url 'category_detail' category.slug %}">{{ category.name }}</a></li>
-            {% empty %}
-            <li><a href="#">Kategori bulunamadı</a></li>
-            {% endfor %}
-        </ul>
-    </nav>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/carousel.css' %}">
+<link rel="stylesheet" href="{% static 'css/categories-grid.css' %}">
+{% endblock %}
 
-    <main>
+{% block content %}
+<main>
         {% if carousel_items %}
         <div class="carousel">
             <div class="list">
@@ -221,14 +156,11 @@
                 {% endif %}
             </div>
         </section>
-
-        <!-- Öne Çıkan Ürünler Bölümü -->
-       
     </main>
+{% endblock %}
 
-    <script src="{% static 'js/header.js' %}"></script>
-    <script src="{% static 'js/carousel.js' %}"></script>
-    <script src="{% static 'js/featured-products.js' %}"></script>
-</body>
-</html>
+{% block extra_js %}
+<script src="{% static 'js/carousel.js' %}"></script>
+<script src="{% static 'js/featured-products.js' %}"></script>
+{% endblock %}
 
