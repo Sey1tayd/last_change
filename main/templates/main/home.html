@@ -138,46 +138,6 @@
         </div>
         {% endif %}
 
-        <!-- Kategoriler Grid Bölümü -->
-        <section class="categories-grid-section">
-            <div class="categories-grid-container">
-                <div class="categories-grid-header">
-                    <h2 class="categories-grid-title">Kategorilerimiz</h2>
-                    <p class="categories-grid-subtitle">İhtiyacınıza uygun kategoriyi seçin</p>
-                </div>
-                {% if categories %}
-                <div class="categories-grid">
-                    {% for category in categories %}
-                    <div class="category-card">
-                        <a href="{% url 'category_detail' category.slug %}" class="category-card-link" aria-label="{{ category.name }} kategorisine git">
-                            {% if category.get_image_url %}
-                            <img src="{{ category.get_image_url }}" alt="{{ category.name }}" class="category-card-image">
-                            {% else %}
-                            <div class="category-placeholder">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                    <polyline points="21 15 16 10 5 21"></polyline>
-                                </svg>
-                            </div>
-                            {% endif %}
-                            <div class="category-card-overlay">
-                                <h3 class="category-card-title">{{ category.name }}</h3>
-                            </div>
-                        </a>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% else %}
-                <div class="categories-grid-empty">
-                    <h3 class="empty-title">Kategori bulunamadı</h3>
-                    <p class="empty-message">Admin panelinden kategori ekleyerek başlayabilirsiniz.</p>
-                </div>
-                {% endif %}
-            </div>
-        </section>
-
-        <!-- Öne Çıkan Ürünler Bölümü -->
         <section class="featured-products-section">
             <div class="featured-products-container">
                 <div class="featured-products-header">
@@ -223,6 +183,47 @@
                 {% endif %}
             </div>
         </section>
+        <!-- Kategoriler Grid Bölümü -->
+        <section class="categories-grid-section">
+            <div class="categories-grid-container">
+                <div class="categories-grid-header">
+                    <h2 class="categories-grid-title">Kategorilerimiz</h2>
+                    <p class="categories-grid-subtitle">İhtiyacınıza uygun kategoriyi seçin</p>
+                </div>
+                {% if categories %}
+                <div class="categories-grid">
+                    {% for category in categories %}
+                    <div class="category-card">
+                        <a href="{% url 'category_detail' category.slug %}" class="category-card-link" aria-label="{{ category.name }} kategorisine git">
+                            {% if category.get_image_url %}
+                            <img src="{{ category.get_image_url }}" alt="{{ category.name }}" class="category-card-image">
+                            {% else %}
+                            <div class="category-placeholder">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                </svg>
+                            </div>
+                            {% endif %}
+                            <div class="category-card-overlay">
+                                <h3 class="category-card-title">{{ category.name }}</h3>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="categories-grid-empty">
+                    <h3 class="empty-title">Kategori bulunamadı</h3>
+                    <p class="empty-message">Admin panelinden kategori ekleyerek başlayabilirsiniz.</p>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- Öne Çıkan Ürünler Bölümü -->
+       
     </main>
 
     <script src="{% static 'js/header.js' %}"></script>
